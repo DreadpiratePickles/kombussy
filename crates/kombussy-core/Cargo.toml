@@ -1,0 +1,14 @@
+[package]
+name = "kombussy-core"
+description = "OpenType/WOFF/WOFF2 font container codec in safe Rust"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+miniz_oxide = "0.8"
+brotli = "7"
+
+[dev-dependencies]

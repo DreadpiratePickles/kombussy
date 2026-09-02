@@ -1,0 +1,27 @@
+[package]
+name = "kombussy-wasm"
+description = "WebAssembly bindings for the kombussy font container codec"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+kombussy-core = { path = "../kombussy-core" }
+wasm-bindgen = "0.2"
+
+# rustc 1.98 emits bulk-memory and sign-extension opcodes, which binaryen only
+# accepts when the corresponding features are enabled explicitly.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = [
+    "-Oz",
+    "--enable-bulk-memory",
+    "--enable-sign-ext",
+    "--enable-mutable-globals",
+    "--enable-nontrapping-float-to-int",
+    "--enable-reference-types",
+]

@@ -1,0 +1,292 @@
+/* Kombussy — a typographic tool, so the interface is set like a specimen sheet:
+   heavy scale contrast, a single accent, and data in monospace. */
+
+:root {
+  color-scheme: dark;
+
+  --ink: oklch(96% 0.01 95);
+  --ink-dim: oklch(72% 0.02 95);
+  --ink-faint: oklch(52% 0.02 95);
+  --ground: oklch(16% 0.012 65);
+  --surface: oklch(21% 0.014 65);
+  --surface-raised: oklch(25% 0.016 65);
+  --edge: oklch(32% 0.018 65);
+  --accent: oklch(80% 0.16 78);
+  --accent-ink: oklch(20% 0.05 78);
+  --danger: oklch(70% 0.17 25);
+
+  --display: 700 clamp(3rem, 1.4rem + 6.4vw, 6.5rem) / 0.92 var(--serif);
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: ui-sans-serif, -apple-system, "Segoe UI", Inter, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+
+  --step: clamp(1.25rem, 0.9rem + 1.4vw, 2.25rem);
+  --radius: 3px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast: 140ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A faint tint keeps the large dark field from reading as flat black. */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, oklch(30% 0.05 78 / 0.5), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, oklch(28% 0.04 250 / 0.35), transparent 70%);
+}
+
+body > *:not(.grain) { position: relative; z-index: 1; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- masthead ---- */
+
+.masthead {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 1rem + 6vw, 6rem) var(--step) clamp(2rem, 1rem + 3vw, 3.5rem);
+}
+
+.wordmark {
+  font: var(--display);
+  margin: 0;
+  letter-spacing: -0.035em;
+  /* The wordmark is the specimen: give it the accent and let it dominate. */
+  background: linear-gradient(180deg, var(--ink) 30%, var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.standfirst {
+  margin: 0.75rem 0 0;
+  max-width: 34ch;
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+  color: var(--ink-dim);
+  text-wrap: balance;
+}
+
+.standfirst em { font-family: var(--mono); font-style: normal; color: var(--ink); font-size: 0.9em; }
+
+.assurance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6ch;
+  margin: 1.5rem 0 0;
+  padding: 0.4rem 0.85rem 0.4rem 0.65rem;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+}
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px oklch(80% 0.16 78 / 0.18);
+}
+
+/* ---- dropzone ---- */
+
+.stage { max-width: 68rem; margin: 0 auto; padding: 0 var(--step); }
+
+.dropzone {
+  display: grid;
+  place-items: center;
+  min-height: clamp(9rem, 6rem + 12vw, 14rem);
+  border: 1px dashed var(--edge);
+  border-radius: var(--radius);
+  background: linear-gradient(var(--surface), var(--ground));
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease),
+              transform var(--fast) var(--ease);
+}
+
+.dropzone:hover,
+.dropzone:focus-visible { border-color: var(--accent); background: var(--surface-raised); }
+.dropzone:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.dropzone.is-dragging { border-color: var(--accent); border-style: solid; transform: scale(1.006); }
+.dropzone.is-busy { cursor: progress; opacity: 0.7; }
+
+.dropzone-inner { text-align: center; padding: 1rem; }
+.dropzone-title { margin: 0; font-size: 1.15rem; font-weight: 600; }
+.dropzone-hint { margin: 0.35rem 0 0; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); }
+
+.status { min-height: 1.5rem; margin: 0.85rem 0 0; font-family: var(--mono); font-size: 0.82rem; color: var(--ink-dim); }
+.status[data-tone="error"] { color: var(--danger); }
+
+/* ---- workbench ---- */
+
+.workbench {
+  max-width: 68rem;
+  margin: clamp(1.5rem, 1rem + 2vw, 2.75rem) auto 0;
+  padding: 0 var(--step);
+  display: grid;
+  gap: 1px;
+  /* Two columns exactly: auto-fit would open a third, empty cell at this
+     container width because the preview panel spans the full row anyway. */
+  grid-template-columns: 1fr;
+  background: var(--edge);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  overflow: hidden;
+  padding: 0;
+  margin-inline: auto;
+  width: min(68rem, 100% - 2 * var(--step));
+}
+
+@media (min-width: 46rem) {
+  .workbench { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+.panel { background: var(--surface); padding: 1.4rem 1.5rem 1.6rem; margin: 0; }
+.panel--preview { grid-column: 1 / -1; }
+
+.panel-title {
+  margin: 0 0 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.panel-note { margin: -0.5rem 0 1rem; font-size: 0.85rem; color: var(--ink-faint); }
+.panel-note em { font-style: normal; color: var(--ink-dim); }
+
+.facts { margin: 0; display: grid; gap: 0.55rem; }
+.facts > div { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+.facts dt { color: var(--ink-faint); font-size: 0.85rem; }
+.facts dd { margin: 0; font-family: var(--mono); font-size: 0.85rem; text-align: right; overflow-wrap: anywhere; }
+
+.tables { margin-top: 1.1rem; border-top: 1px solid var(--edge); padding-top: 0.8rem; }
+.tables summary { cursor: pointer; font-size: 0.82rem; color: var(--ink-dim); }
+.tables summary:hover { color: var(--ink); }
+.table-list {
+  list-style: none;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  max-height: 11rem;
+  overflow-y: auto;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+.table-list li { display: flex; justify-content: space-between; padding: 0.2rem 0; color: var(--ink-dim); }
+.table-list li span:first-child { color: var(--ink); }
+
+/* ---- target picker ---- */
+
+.targets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 1.1rem; }
+
+.target {
+  appearance: none;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--ground);
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.5rem;
+  cursor: pointer;
+  transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease),
+              background var(--fast) var(--ease);
+}
+.target:hover { color: var(--ink); border-color: var(--ink-faint); }
+.target:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.target[aria-checked="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
+.download {
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--ground);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease);
+}
+.download:hover:not(:disabled) { transform: translateY(-1px); }
+.download:active:not(:disabled) { transform: translateY(0); }
+.download:disabled { opacity: 0.4; cursor: not-allowed; }
+.download:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.result { margin: 0.85rem 0 0; min-height: 1.4rem; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-dim); }
+.result[data-tone="error"] { color: var(--danger); }
+.result strong { color: var(--accent); font-weight: 600; }
+
+/* ---- preview ---- */
+
+.preview {
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--ground);
+  padding: 1.5rem;
+  min-height: 8rem;
+  display: grid;
+  align-content: center;
+  gap: 0.75rem;
+  overflow-x: auto;
+}
+
+.preview-line { margin: 0; font-family: var(--preview-font, var(--serif)); overflow-wrap: anywhere; }
+.preview-line--display { font-size: clamp(2rem, 1rem + 4vw, 3.5rem); line-height: 1.1; }
+.preview-line--body { font-size: 1.05rem; color: var(--ink-dim); }
+.preview[data-empty="true"] { color: var(--ink-faint); }
+
+.sample-label { display: block; margin: 1rem 0 0.4rem; font-size: 0.8rem; color: var(--ink-faint); }
+.sample {
+  width: 100%;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 0.55rem 0.7rem;
+}
+.sample:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+
+/* ---- colophon ---- */
+
+.colophon {
+  max-width: 68rem;
+  margin: 3rem auto 0;
+  padding: 1.5rem var(--step) 3rem;
+  border-top: 1px solid var(--edge);
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+.colophon a { color: var(--ink-dim); text-decoration-color: var(--edge); text-underline-offset: 3px; }
+.colophon a:hover { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+}

@@ -1,0 +1,13 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# Node
+node_modules/
+web/dist/
+
+# wasm-pack output is generated from crates/kombussy-wasm; see `make wasm`.
+web/src/wasm/
+
+# OS
+.DS_Store

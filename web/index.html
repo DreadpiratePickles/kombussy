@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kombussy — font container converter</title>
+    <meta
+      name="description"
+      content="Convert fonts between TTF, OTF, WOFF and WOFF2 entirely in your browser. Nothing is uploaded."
+    />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <h1 class="wordmark">kombussy</h1>
+      <p class="standfirst">
+        Font container conversion — <em>ttf</em>, <em>otf</em>, <em>woff</em>, <em>woff2</em> —
+        that runs entirely inside this tab.
+      </p>
+      <p class="assurance" data-testid="privacy-note">
+        <span class="dot" aria-hidden="true"></span>
+        No upload. No server. The converter is WebAssembly running on your own machine.
+      </p>
+    </header>
+
+    <main>
+      <section class="stage" aria-labelledby="drop-heading">
+        <h2 id="drop-heading" class="sr-only">Choose a font</h2>
+        <div id="dropzone" class="dropzone" tabindex="0" role="button"
+             aria-describedby="dropzone-hint">
+          <div class="dropzone-inner">
+            <p class="dropzone-title">Drop a font here</p>
+            <p id="dropzone-hint" class="dropzone-hint">
+              or press Enter to browse · .ttf .otf .woff .woff2
+            </p>
+          </div>
+          <input id="file-input" type="file" accept=".ttf,.otf,.woff,.woff2,font/*" hidden />
+        </div>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="workbench" class="workbench" hidden aria-labelledby="workbench-heading">
+        <h2 id="workbench-heading" class="sr-only">Conversion</h2>
+
+        <article class="panel panel--source">
+          <h3 class="panel-title">Source</h3>
+          <dl class="facts">
+            <div><dt>File</dt><dd id="source-name">—</dd></div>
+            <div><dt>Container</dt><dd id="source-container">—</dd></div>
+            <div><dt>Size</dt><dd id="source-size">—</dd></div>
+            <div><dt>Tables</dt><dd id="source-count">—</dd></div>
+          </dl>
+          <details class="tables">
+            <summary>Table directory</summary>
+            <ul id="table-list" class="table-list"></ul>
+          </details>
+        </article>
+
+        <article class="panel panel--convert">
+          <h3 class="panel-title">Convert to</h3>
+          <div id="targets" class="targets" role="radiogroup" aria-label="Target format"></div>
+          <button id="download" class="download" type="button" disabled>
+            <span id="download-label">Convert</span>
+          </button>
+          <p id="result" class="result" aria-live="polite"></p>
+        </article>
+
+        <article class="panel panel--preview">
+          <h3 class="panel-title">Proof</h3>
+          <p class="panel-note">
+            Rendered with the <em>converted</em> file, loaded back as a live web font.
+          </p>
+          <div id="preview" class="preview" aria-live="polite">
+            <p class="preview-line preview-line--display">Handgloves</p>
+            <p class="preview-line preview-line--body">
+              ABCDEFGHIJKLM abcdefghijklm 0123456789
+            </p>
+          </div>
+          <label class="sample-label" for="sample">Sample text</label>
+          <input id="sample" class="sample" type="text" value="Handgloves" maxlength="40" />
+        </article>
+      </section>
+    </main>
+
+    <footer class="colophon">
+      <p>
+        Safe Rust compiled to WebAssembly. Verified against
+        <a href="https://github.com/fonttools/fonttools">fontTools</a> in both directions.
+      </p>
+    </footer>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

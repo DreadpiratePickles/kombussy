@@ -1,0 +1,15 @@
+[package]
+name = "kombussy-cli"
+description = "Command line font container converter"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "kombussy"
+path = "src/main.rs"
+
+[dependencies]
+kombussy-core = { path = "../kombussy-core" }

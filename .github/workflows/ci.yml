@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace
+
+  interop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: astral-sh/setup-uv@v5
+      - run: cargo build --release -p kombussy-cli
+      # Regenerate the corpus first: if the committed fixtures ever drift from
+      # what fontTools produces, this fails instead of silently testing stale bytes.
+      - run: uv run --with "fonttools[woff]" --with brotli python3 fixtures/generate.py
+      - run: git diff --exit-code --stat fixtures/ || (echo "committed fixtures differ from generator output" && exit 1)
+      - run: uv run --with "fonttools[woff]" --with brotli python3 fixtures/verify_interop.py
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: jetli/wasm-pack-action@v0.4.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: wasm-pack build crates/kombussy-wasm --target web --out-dir ../../web/src/wasm --release
+      - run: npm install
+        working-directory: web
+      - run: npm run build
+        working-directory: web
