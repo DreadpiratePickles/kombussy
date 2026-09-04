@@ -1,8 +1,26 @@
-# kombussy
+<div align="center">
+
+# 🔤 kombussy
+
+### TTF ⇄ WOFF ⇄ WOFF2 — in your browser or your terminal. Safe Rust, zero upload.
+
+**Your fonts never leave the tab.**
+
+![tests](https://img.shields.io/badge/tests-30%20passing-brightgreen)
+![interop](https://img.shields.io/badge/cross--checked-fontTools-success)
+![wasm](https://img.shields.io/badge/wasm-484%20KB%20gzipped-blue)
+![toolchain](https://img.shields.io/badge/Emscripten-not%20required-orange)
+![unsafe](https://img.shields.io/badge/unsafe__code-forbidden-8A2BE2)
+![license](https://img.shields.io/badge/license-Apache--2.0-informational)
+
+</div>
+
+---
 
 Convert fonts between **TTF/OTF**, **WOFF** and **WOFF2**, entirely in the browser
 or from the command line. Safe Rust compiled to WebAssembly — no Emscripten, no
-server, no upload.
+server, no upload. Everything round-trips through one `Font` type, and every
+byte we emit is cross-checked against fontTools reading it back.
 
 A rebuild of [bashi/kombu](https://github.com/bashi/kombu) (2018–2021), which
 did the same job with a C++ codebase behind an Emscripten toolchain and webpack 4.
